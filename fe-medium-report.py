@@ -35,13 +35,13 @@ display(mediumCleanDF)
 # COMMAND ----------
 
 from pyspark.sql.functions import pandas_udf, desc
-from helpers.medium import get_claps
+from helpers.medium import get_metrics
   
 # Apply UDF
-clapsDF = mediumCleanDF.groupby("link").applyInPandas(get_claps, schema="link string, claps double")
+enrichedDF = mediumCleanDF.groupby("link").applyInPandas(get_metrics, schema="link string, claps double, readingTime double")
 
 # Join on original data, sort by number of claps descending
-finalDF = clapsDF.join(mediumCleanDF, on = "link", how = "right_outer").sort(desc("claps"))
+finalDF = enrichedDF.join(mediumCleanDF, on = "link", how = "right_outer").sort(desc("claps"))
 
 # COMMAND ----------
 
