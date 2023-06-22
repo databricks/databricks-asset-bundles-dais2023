@@ -14,14 +14,13 @@
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ### Read CSV
+# MAGIC %md ### Read CSV
 
 # COMMAND ----------
 
 from pyspark.sql.functions import regexp_replace
 
-mediumRawDF = spark.read.csv('file:/Workspace/Repos/rafi.kurlansik@databricks.com/data-asset-bundles-dais2023/fe_medium_posts_raw.csv', header=True)
+mediumRawDF = spark.read.csv('file:/Workspace/Repos/rafi.kurlansik@databricks.com/data-asset-bundles-dais2023/data/fe_medium_posts_raw.csv', header=True)
 
 # Remove null links and clean author column
 mediumCleanDF = mediumRawDF.filter(mediumRawDF.link != 'null').withColumn("author", regexp_replace("author", "\\([^()]*\\)", ""))
@@ -29,25 +28,14 @@ display(mediumCleanDF)
 
 # COMMAND ----------
 
-# MAGIC %md 
-# MAGIC ### Get Claps
+# MAGIC %md ### Get Claps
 # MAGIC
 # MAGIC Source: https://github.com/FrenchTechLead/medium-stats-api
 
 # COMMAND ----------
 
 from pyspark.sql.functions import pandas_udf, desc
-import pandas as pd
-
-# Get Medium page HTML and parse clap count
-def get_claps(input_df: pd.DataFrame) -> pd.DataFrame:
-    story_url = input_df['link'][0]
-    c = requests.get(story_url).content.decode("utf-8")
-    c = c.split('clapCount":')[1]
-    endIndex = c.index(",")
-    claps = int(c[0:endIndex])
-    result = pd.DataFrame(data={'link': [story_url], 'claps': [claps]})
-    return result
+from helpers.medium import get_claps
   
 # Apply UDF
 clapsDF = mediumCleanDF.groupby("link").applyInPandas(get_claps, schema="link string, claps double")
@@ -57,8 +45,7 @@ finalDF = clapsDF.join(mediumCleanDF, on = "link", how = "right_outer").sort(des
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ### Visualize Results
+# MAGIC %md ### Visualize
 
 # COMMAND ----------
 
