@@ -1,0 +1,66 @@
+bundle:
+  name: medium_post_report
+
+# By default we load files matching these patterns:
+#
+#   include:
+#     - "*.yml"
+#     - "*/*.yml"
+#
+
+workspace:
+  host: https://e2-dogfood.staging.cloud.databricks.com/
+
+resources:
+  pipelines:
+    count_medium_claps:
+      name: "[${bundle.environment}] Count claps on Medium posts"
+      target: "medium_post_report_${bundle.environment}"
+      libraries:
+        - file:
+            path: ./input.py
+        - file:
+            path: ./count_claps.py
+
+      channel: preview
+
+      configuration:
+        "bundle.file_path": "/Workspace/${workspace.file_path}"
+
+
+environments:
+  development:
+    default: true
+
+    resources:
+      pipelines:
+        count_medium_claps:
+          development: true
+
+
+  qa:
+    # This environment is when deploying from a pull request on GitHub.
+    resources:
+      pipelines:
+        count_medium_claps:
+          development: true
+
+
+  production:
+    # We can configure our production workspace below if we have to.
+    #
+    # workspace:
+    #   host: https://my-production-workspace.cloud.databricks.com/
+    #
+
+    resources:
+      pipelines:
+        count_medium_claps:
+          development: false
+
+          photon: true
+
+          clusters:
+            - autoscale:
+                min_workers: 2
+                max_workers: 8
