@@ -5,7 +5,8 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import regexp_replace
 
 
-@dlt.view
+@dlt.table
+@dlt.expect("No null links", "link is not null")
 def input():
     csv_path = "dbfs:/data-asset-bundles-dais2023/fe_medium_posts_raw.csv"
     return spark.read.csv(csv_path, header=True)
