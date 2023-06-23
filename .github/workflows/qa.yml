@@ -27,7 +27,7 @@ jobs:
 
       - run: databricks bundle deploy
         env:
-          DATABRICKS_TOKEN: ${{ secrets.E2_DOGFOOD_SP_TOKEN }}
+          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
           DATABRICKS_BUNDLE_ENV: qa
 
   pipeline_update:
