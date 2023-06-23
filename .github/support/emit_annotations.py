@@ -48,7 +48,7 @@ def main():
                     print(f"::warning file={flow.relpath},line={flow.lineno}::{message}")
 
         if flow_status == 'FAILED':
-            message = f"Expectation '{name}' failed"
+            message = f"Flow '{flow_name}' failed"
             print(f"::error file={flow.relpath},line={flow.lineno}::{message}")
 
 
