@@ -14,6 +14,6 @@ def input():
 @dlt.table
 def input_clean():
     df: DataFrame = dlt.read("input")
-    df = df.filter(df["link"].isNotNull())
+    df = df.filter(df.link != 'null')
     df = df.withColumn("author", regexp_replace("author", "\\([^()]*\\)", ""))
     return df

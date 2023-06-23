@@ -9,7 +9,7 @@ bundle:
 #
 
 workspace:
-  host: https://e2-dogfood.staging.cloud.databricks.com/
+  host: https://e2-demo-west.cloud.databricks.com/
 
 resources:
   pipelines:
