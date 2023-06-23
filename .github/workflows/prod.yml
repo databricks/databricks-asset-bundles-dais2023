@@ -1,0 +1,45 @@
+name: Deploy to prod
+
+concurrency: 1
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.yml"
+      - "**/*.py"
+
+jobs:
+  deploy:
+    name: "Deploy bundle"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: databricks/setup-cli@main
+
+      - run: databricks bundle deploy
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: production
+
+  pipeline_update:
+    name: "Run pipeline update"
+    runs-on: ubuntu-latest
+
+    needs:
+      - deploy
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: databricks/setup-cli@main
+
+      # - run: databricks bundle run count_medium_claps --refresh-all
+      #   env:
+      #     DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+      #     DATABRICKS_BUNDLE_ENV: production
