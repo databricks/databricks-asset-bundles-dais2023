@@ -59,12 +59,12 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
           DATABRICKS_BUNDLE_ENV: qa
 
-      # - shell: bash
-      #   if: always()
-      #   name: Emit annotations
-      #   run: |
-      #     pipeline_id=$(head -1 output.log | awk -F / '{print $6}')
-      #     update_id=$(head -1 output.log | awk -F / '{print $8}')
-      #     PYTHONPATH=$PWD:$PWD/.github/support python3 .github/support/emit_annotations.py $pipeline_id $update_id
-      #   env:
-      #     DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+      - shell: bash
+        if: always()
+        name: Emit annotations
+        run: |
+          pipeline_id=$(head -1 output.log | awk -F / '{print $6}')
+          update_id=$(head -1 output.log | awk -F / '{print $8}')
+          PYTHONPATH=$PWD:$PWD/.github/support python3 .github/support/emit_annotations.py $pipeline_id $update_id
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}

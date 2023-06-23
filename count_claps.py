@@ -14,13 +14,14 @@ def include_medium_metrics():
 
     # Join on original data, sort by number of claps descending
     finalDF = metricsDF.join(df, on = "link", how = "right_outer").sort(desc("claps"))
-
     return metricsDF
 
 # Get Medium page HTML and parse clap count
 def get_metrics(input_df: pd.DataFrame) -> pd.DataFrame:
     story_url = input_df['link'][0]
-    story = requests.get(story_url).content.decode("utf-8")
+    response = story = requests.get(story_url)
+    response.raise_for_status()
+    story = response.content.decode("utf-8")
     c = story.split('clapCount":')[1]
     r = story.split('readingTime":')[1]
     clapEndIndex = c.index(",")
