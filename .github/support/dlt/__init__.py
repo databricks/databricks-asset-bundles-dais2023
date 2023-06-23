@@ -56,6 +56,7 @@ def table(_func = None, *, name=None, expr=None):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
+        _get_or_create_flow(func)
         return wrapper
 
     if _func is None:
@@ -69,6 +70,7 @@ def view(_func = None, *, name=None, expr=None):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
+        _get_or_create_flow(func)
         return wrapper
 
     if _func is None:

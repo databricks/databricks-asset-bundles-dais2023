@@ -32,6 +32,9 @@ def main():
         if flow_status == 'COMPLETED':
             data_quality = flow_progress['data_quality']
 
+            if not 'expectations' in data_quality:
+                continue
+
             for exp in data_quality['expectations']:
                 passed_records = exp['passed_records']
                 failed_records = exp['failed_records']
