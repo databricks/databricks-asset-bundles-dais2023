@@ -1,47 +1,17 @@
 # Databricks notebook source
-# MAGIC %md ### Medium Claps
-# MAGIC
-# MAGIC #### Main report
-# MAGIC 1. Start with csv of URLs, author, published_on
-# MAGIC 2. Load csv with DLT, add claps in DLT pipeline, create final output table for visualization
-# MAGIC 3. Visualize results
-# MAGIC
-# MAGIC #### Demo flow
-# MAGIC 1. We have a bundle already, our data asset is a DLT pipeline and report that captures claps.  When running in dev, we limit the number of URLs we scrape.  In QA/Prod we run the full pipeline.
-# MAGIC 2. Let's add to our data asset - read time and/or followers
-# MAGIC 3. We make a change, commit, PR, bundle run fails - code not merged. 
-# MAGIC 4. Fix code, re-commit, PR, bundle run successful - code merged.
+# MAGIC %md ## Top Medium Posts by Databricks Field Engineering
 
 # COMMAND ----------
 
-# MAGIC %md ### Read CSV
+# MAGIC %md ### Read Data
 
 # COMMAND ----------
 
-from pyspark.sql.functions import regexp_replace
+from pyspark.sql.functions import desc
+mediumDF = spark.read.table("hive_metastore.medium_post_report_development.include_medium_metrics")
+inputCleanDF = spark.read.table("hive_metastore.medium_post_report_development.input_clean")
 
-mediumRawDF = spark.read.csv('file:/Workspace/Repos/rafi.kurlansik@databricks.com/data-asset-bundles-dais2023/data/fe_medium_posts_raw.csv', header=True)
-
-# Remove null links and clean author column
-mediumCleanDF = mediumRawDF.filter(mediumRawDF.link != 'null').withColumn("author", regexp_replace("author", "\\([^()]*\\)", ""))
-display(mediumCleanDF)
-
-# COMMAND ----------
-
-# MAGIC %md ### Get Claps
-# MAGIC
-# MAGIC Source: https://github.com/FrenchTechLead/medium-stats-api
-
-# COMMAND ----------
-
-from pyspark.sql.functions import pandas_udf, desc
-from helpers.medium import get_metrics
-  
-# Apply UDF
-enrichedDF = mediumCleanDF.groupby("link").applyInPandas(get_metrics, schema="link string, claps double, readingTime double")
-
-# Join on original data, sort by number of claps descending
-finalDF = enrichedDF.join(mediumCleanDF, on = "link", how = "right_outer").sort(desc("claps"))
+enrichedDF = mediumDF.join(inputCleanDF, on = "link", how = "right_outer").sort(desc("claps"))
 
 # COMMAND ----------
 
@@ -49,4 +19,92 @@ finalDF = enrichedDF.join(mediumCleanDF, on = "link", how = "right_outer").sort(
 
 # COMMAND ----------
 
-display(finalDF)
+# MAGIC %md
+# MAGIC #### Top 20 Articles by Applause
+
+# COMMAND ----------
+
+# Import necessary libraries
+import plotly.express as px
+
+# Get top articles
+top_articles = enrichedDF.toPandas().head(20)
+
+# Create bar chart using Top 20 articles data
+fig = px.bar(top_articles, x='author', y='claps', 
+             labels={'author':'Article Author', 'claps':'Number of Claps'},
+             hover_data={'author': True, 'link': True, 'summary': True},
+             height=400)
+
+# Update chart layout
+fig.update_layout(title_text='Top 20 Articles by Applause', 
+                  xaxis_title='Author', 
+                  yaxis_title='Claps',
+                  plot_bgcolor='white')
+
+# Display chart
+displayHTML(fig.to_html(full_html=False))
+
+# COMMAND ----------
+
+# MAGIC %md #### Top 5 longest articles
+
+# COMMAND ----------
+
+import plotly.express as px
+
+# Get top 5 longest articles
+top_five_articles = enrichedDF.sort(desc("readingTime")).toPandas().head(5)
+
+# Create bar chart using Top 5 articles data
+fig = px.bar(top_five_articles, x='author', y='readingTime', 
+             labels={'author':'Article Author', 'readingTime':'Reading Time (minutes)'},
+             height=400,
+             title='Top 5 Longest Articles by Reading Time',
+             hover_data={'author': True, 'link': True, 'summary': True}
+            )
+
+# Update chart layout
+fig.update_layout(title_text='Top 5 Longest Articles by Reading Time', 
+                  xaxis_title='Author', 
+                  yaxis_title='Reading Time (min)',
+                  plot_bgcolor='white')
+
+# Display chart
+displayHTML(fig.to_html(full_html=False))
+
+# COMMAND ----------
+
+# MAGIC %md #### Top 5 Shortest Articles
+
+# COMMAND ----------
+
+import plotly.express as px
+
+# Get top 5 longest articles
+top_five_articles = enrichedDF.sort("readingTime").toPandas().head(5)
+
+# Create bar chart using Top 5 articles data
+fig = px.bar(top_five_articles, x='author', y='readingTime', 
+             labels={'author':'Article Author', 'readingTime':'Reading Time (minutes)'},
+             height=400,
+             title='Top 5 Shortest Articles by Reading Time',
+             hover_data={'author': True, 'link': True, 'summary': True}
+            )
+
+# Update chart layout
+fig.update_layout(title_text='Top 5 Shortest Articles by Reading Time', 
+                  xaxis_title='Author', 
+                  yaxis_title='Reading Time (min)',
+                  plot_bgcolor='white')
+
+# Display chart
+displayHTML(fig.to_html(full_html=False))
+
+# COMMAND ----------
+
+# MAGIC %md #### Explore full dataset
+
+# COMMAND ----------
+
+display(enrichedDF)
