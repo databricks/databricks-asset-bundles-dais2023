@@ -1,7 +1,7 @@
 from os import path
 import dlt
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import desc, pandas_udf
+from pyspark.sql.functions import desc
 import pandas as pd
 import requests
 
