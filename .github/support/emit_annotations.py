@@ -4,8 +4,8 @@ import dlt
 from databricks.sdk import WorkspaceClient
 
 def main():
-    import count_claps
-    import input
+    import get_metrics
+    import ingest
 
     pipeline_id = sys.argv[1]
     update_id = sys.argv[2]
