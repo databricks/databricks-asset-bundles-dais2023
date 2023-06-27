@@ -54,7 +54,7 @@ jobs:
         name: Run pipeline update
         run: |
           set -o pipefail
-          databricks bundle run count_medium_claps --refresh-all 2>&1 | tee output.log
+          databricks bundle run fe_medium_metrics --refresh-all 2>&1 | tee output.log
         env:
           DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
           DATABRICKS_BUNDLE_ENV: qa
