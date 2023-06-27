@@ -7,6 +7,12 @@
 
 # COMMAND ----------
 
+from pyspark.sql.functions import desc
+
+dbutils.widgets.text("dbname", "")
+
+# COMMAND ----------
+
 # Read Medium metrics table
 full_table_path = "hive_metastore." + dbutils.widgets.get("dbname") + ".medium_metrics"
 enrichedDF = spark.read.table(full_table_path)
@@ -38,6 +44,62 @@ fig = px.bar(top_articles, x='author', y='claps',
 fig.update_layout(title_text='Top 20 Articles by Applause', 
                   xaxis_title='Author', 
                   yaxis_title='Claps',
+                  plot_bgcolor='white')
+
+# Display chart
+displayHTML(fig.to_html(full_html=False))
+
+# COMMAND ----------
+
+# MAGIC %md #### Top 5 longest articles
+
+# COMMAND ----------
+
+import plotly.express as px
+
+# Get top 5 longest articles
+top_five_articles = enrichedDF.sort(desc("readingTime")).toPandas().head(5)
+
+# Create bar chart using Top 5 articles data
+fig = px.bar(top_five_articles, x='author', y='readingTime', 
+             labels={'author':'Article Author', 'readingTime':'Reading Time (minutes)'},
+             height=400,
+             title='Top 5 Longest Articles by Reading Time',
+             hover_data={'author': True, 'link': True, 'summary': True}
+            )
+
+# Update chart layout
+fig.update_layout(title_text='Top 5 Longest Articles by Reading Time', 
+                  xaxis_title='Author', 
+                  yaxis_title='Reading Time (min)',
+                  plot_bgcolor='white')
+
+# Display chart
+displayHTML(fig.to_html(full_html=False))
+
+# COMMAND ----------
+
+# MAGIC %md #### Top 5 Shortest Articles
+
+# COMMAND ----------
+
+import plotly.express as px
+
+# Get top 5 longest articles
+top_five_articles = enrichedDF.sort("readingTime").toPandas().head(5)
+
+# Create bar chart using Top 5 articles data
+fig = px.bar(top_five_articles, x='author', y='readingTime', 
+             labels={'author':'Article Author', 'readingTime':'Reading Time (minutes)'},
+             height=400,
+             title='Top 5 Shortest Articles by Reading Time',
+             hover_data={'author': True, 'link': True, 'summary': True}
+            )
+
+# Update chart layout
+fig.update_layout(title_text='Top 5 Shortest Articles by Reading Time', 
+                  xaxis_title='Author', 
+                  yaxis_title='Reading Time (min)',
                   plot_bgcolor='white')
 
 # Display chart
