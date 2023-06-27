@@ -29,7 +29,7 @@ resources:
         - task_key: dlt_medium_pipeline
           pipeline_task:
             pipeline_id: ${resources.pipelines.medium_metrics_pipeline.id}
-        - task_key: medium_notebook_report
+        - task_key: "${bundle.environment}_medium_notebook_report"
           depends_on:
             - task_key: dlt_medium_pipeline
           notebook_task:
@@ -37,9 +37,9 @@ resources:
               dbname: "medium_post_report_${bundle.environment}"
             notebook_path: ./fe_medium_report.py
           new_cluster:
-            spark_version: 13.1.x-cpu-ml-scala2.12
-            num_workers: 1
-            node_type_id: i3.xlarge  
+                spark_version: 13.1.x-scala2.12
+                num_workers: 1
+                node_type_id: i3.xlarge            
 
 environments:
   development:
@@ -49,7 +49,11 @@ environments:
       pipelines:
         medium_metrics_pipeline:
           development: true
-
+      jobs:
+        fe_medium_metrics:
+          tasks:
+            - task_key: medium_post_report
+              existing_cluster_id: 0627-021846-tkghhdnq
 
   qa: # This environment is when deploying test runs from a pull request on GitHub.
     workspace:
@@ -60,12 +64,11 @@ environments:
           development: true
           permissions:
             - level: CAN_VIEW
-              group_name: users
+              group_name: users      
 
   production:
     workspace:
       host: https://e2-demo-west.cloud.databricks.com/
-
     resources:
       pipelines:
         medium_metrics_pipeline:
@@ -73,9 +76,7 @@ environments:
           - level: CAN_VIEW
             group_name: users
           development: false
-
           photon: true
-
           clusters:
             - autoscale:
                 min_workers: 2
