@@ -1,3 +1,5 @@
-# data-asset-bundles-dais2023
+# Databricks Asset Bundles
 
-Repo for the DABs talk at DAIS 2023
+_Write code once, deploy to lakehouses everywhere..._
+
+<img src='./data/bundle.jpeg' width=400>
