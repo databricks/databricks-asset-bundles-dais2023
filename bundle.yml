@@ -9,18 +9,18 @@ bundle:
 #
 
 workspace:
-  host: https://e2-demo-west.cloud.databricks.com/
+  host: https://e2-dogfood.staging.cloud.databricks.com/
 
 resources:
   pipelines:
-    count_medium_claps:
-      name: "[${bundle.environment}] Count claps on Medium posts"
+    fe_medium_metrics:
+      name: "[${bundle.environment}] Count metrics on Medium posts"
       target: "medium_post_report_${bundle.environment}"
       libraries:
         - file:
             path: ./input.py
         - file:
-            path: ./count_claps.py
+            path: ./get_metrics.py
 
       channel: preview
 
@@ -34,7 +34,7 @@ environments:
 
     resources:
       pipelines:
-        count_medium_claps:
+        fe_medium_metrics:
           development: true
 
 
@@ -42,7 +42,7 @@ environments:
     # This environment is when deploying from a pull request on GitHub.
     resources:
       pipelines:
-        count_medium_claps:
+        fe_medium_metrics:
           development: true
 
 
@@ -55,7 +55,7 @@ environments:
 
     resources:
       pipelines:
-        count_medium_claps:
+        fe_medium_metrics:
           development: false
 
           photon: true
