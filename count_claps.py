@@ -29,7 +29,7 @@ def get_metrics(input_df: pd.DataFrame) -> pd.DataFrame:
       claps = int(c[0:clapEndIndex])
       readingTime = float(r[0:rEndIndex])
       result = pd.DataFrame(data={'link': [story_url], 'claps': [claps], 'readingTime': [readingTime]})
-    except:
+    except Exception:
       print("Couldnt access URL, returning 0")
       result = pd.DataFrame(data={'link': [story_url], 'claps': [0], 'readingTime': [0]})
     return result
