@@ -2,48 +2,44 @@
 bundle:
   name: medium_post_report
 
-# By default we load files matching these patterns:
-#
-#   include:
-#     - "*.yml"
-#     - "*/*.yml"
-#
-
 workspace:
   host: https://e2-dogfood.staging.cloud.databricks.com/
 
 resources:
+
   pipelines:
-    fe_medium_metrics:
-      name: "[${bundle.environment}] Metrics for FE Medium posts"
+    # Our DLT pipeline
+    medium_metrics_pipeline:
+      name: "[${bundle.environment}] FE Medium Metrics Pipeline"
       target: "medium_post_report_${bundle.environment}"
       libraries:
         - file:
             path: ./ingest.py
         - file:
             path: ./get_metrics.py
-
       channel: preview
-
       configuration:
         "bundle.file_path": "/Workspace/${workspace.file_path}"
+
   jobs:
+    # A two-task Databricks Workflow - dlt + notebook report
     fe_medium_metrics:
       name: "[${bundle.environment}] Metrics for FE Medium Posts"
       tasks:
         - task_key: dlt_medium_pipeline
           pipeline_task:
-            pipeline_id: ${resources.pipelines.nyc_taxi_pipeline.id}
+            pipeline_id: ${resources.pipelines.medium_metrics_pipeline.id}
         - task_key: medium_notebook_report
+          depends_on:
+            - task_key: dlt_medium_pipeline
           notebook_task:
             base_parameters:
               dbname: "medium_post_report_${bundle.environment}"
-            notebook_path: ./shark_sightings.py
+            notebook_path: ./fe_medium_report.py
           new_cluster:
-            spark_version: 10.4.x-scala2.12
+            spark_version: 13.1.x-cpu-ml-scala2.12
             num_workers: 1
             node_type_id: i3.xlarge  
-
 
 environments:
   development:
@@ -51,28 +47,31 @@ environments:
 
     resources:
       pipelines:
-        fe_medium_metrics:
+        medium_metrics_pipeline:
           development: true
 
 
-  qa:
-    # This environment is when deploying from a pull request on GitHub.
+  qa: # This environment is when deploying test runs from a pull request on GitHub.
+    workspace:
+      host: https://e2-demo-west.cloud.databricks.com/
     resources:
       pipelines:
-        fe_medium_metrics:
+        medium_metrics_pipeline:
           development: true
-
+          permissions:
+            - level: CAN_VIEW
+              group_name: users
 
   production:
-    # We can configure our production workspace below if we have to.
-    #
-    # workspace:
-    #   host: https://my-production-workspace.cloud.databricks.com/
-    #
+    workspace:
+      host: https://e2-demo-west.cloud.databricks.com/
 
     resources:
       pipelines:
-        fe_medium_metrics:
+        medium_metrics_pipeline:
+          permissions:
+          - level: CAN_VIEW
+            group_name: users
           development: false
 
           photon: true
