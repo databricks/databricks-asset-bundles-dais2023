@@ -37,23 +37,17 @@ resources:
               dbname: "medium_post_report_${bundle.environment}"
             notebook_path: ./fe_medium_report.py
           new_cluster:
-                spark_version: 13.1.x-scala2.12
-                num_workers: 1
-                node_type_id: i3.xlarge            
+            spark_version: 13.1.x-scala2.12
+            num_workers: 1
+            node_type_id: i3.xlarge            
 
 environments:
   development:
     default: true
-
     resources:
       pipelines:
         medium_metrics_pipeline:
           development: true
-      jobs:
-        fe_medium_metrics:
-          tasks:
-            - task_key: medium_post_report
-              existing_cluster_id: 0627-021846-tkghhdnq
 
   qa: # This environment is when deploying test runs from a pull request on GitHub.
     workspace:
