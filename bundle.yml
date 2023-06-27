@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=bundle_config_schema.json
 bundle:
   name: medium_post_report
 
@@ -14,11 +15,11 @@ workspace:
 resources:
   pipelines:
     fe_medium_metrics:
-      name: "[${bundle.environment}] Count metrics on Medium posts"
+      name: "[${bundle.environment}] Metrics for FE Medium posts"
       target: "medium_post_report_${bundle.environment}"
       libraries:
         - file:
-            path: ./input.py
+            path: ./ingest.py
         - file:
             path: ./get_metrics.py
 
@@ -26,6 +27,22 @@ resources:
 
       configuration:
         "bundle.file_path": "/Workspace/${workspace.file_path}"
+  jobs:
+    fe_medium_metrics:
+      name: "[${bundle.environment}] Metrics for FE Medium Posts"
+      tasks:
+        - task_key: dlt_medium_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.nyc_taxi_pipeline.id}
+        - task_key: medium_notebook_report
+          notebook_task:
+            base_parameters:
+              dbname: "medium_post_report_${bundle.environment}"
+            notebook_path: ./shark_sightings.py
+          new_cluster:
+            spark_version: 10.4.x-scala2.12
+            num_workers: 1
+            node_type_id: i3.xlarge  
 
 
 environments:

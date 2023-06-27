@@ -8,10 +8,14 @@
 # COMMAND ----------
 
 from pyspark.sql.functions import desc
-mediumDF = spark.read.table("hive_metastore.medium_post_report_development.include_medium_metrics")
-inputCleanDF = spark.read.table("hive_metastore.medium_post_report_development.input_clean")
 
-enrichedDF = mediumDF.join(inputCleanDF, on = "link", how = "right_outer").sort(desc("claps"))
+dbutils.widgets.text("dbname", "")
+
+# COMMAND ----------
+
+# Read Medium metrics table
+full_table_path = "hive_metastore." + dbutils.widgets.get("dbname") + ".medium_metrics"
+enrichedDF = spark.read.table(full_table_path)
 
 # COMMAND ----------
 
