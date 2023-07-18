@@ -4,7 +4,8 @@ _Write code once, deploy to lakehouses everywhere..._
 
 <img src='./data/bundle.jpeg' width=400>
 
-_Click [here](https://www.youtube.com/watch?v=9HOgYVo-WTM) to watch the talk on Databricks Asset Bundles at Data & AI Summit 2023._
+_Click [here](https://www.youtube.com/watch?v=9HOgYVo-WTM) to watch the talk on Databricks Asset Bundles at Data & AI Summit 2023. 
+ You can find the slides from the presentation [here](https://docs.google.com/presentation/d/1bnnTR19j_nZhB0bDCMoGga-8Sq6eBjhBAom-6NJ6F0I/edit?usp=sharing)._
 
 ## Introduction
 _Databricks Asset Bundles_, also known simply as bundles, enable you to programmatically validate, deploy, and run the projects you are working on in Databricks via the [Databricks CLI](https://github.com/databricks/cli).  A bundle is a collection of one or more related files that contain:
