@@ -1,0 +1,3 @@
+Copyright (2023) Databricks, Inc.
+
+This Software includes software developed at Databricks (Data Lakehouse Architecture and AI Company - Databricks ) and its use is subject to the included LICENSE file.
