@@ -18,6 +18,11 @@ resources:
         - file:
             path: ./get_metrics.py
       channel: preview
+      clusters:
+        - policy_id: "E060384AFC00043E"
+          aws_attributes:
+              instance_profile_arn: "arn:aws:iam::997819012307:instance-profile/shard-demo-s3-access"
+
       configuration:
         "bundle.file_path": "/Workspace/${workspace.file_path}"
 
