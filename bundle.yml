@@ -10,7 +10,7 @@ resources:
   pipelines:
     # Our DLT pipeline
     medium_metrics_pipeline:
-      name: "[${bundle.environment}] FE Medium Metrics Pipeline - NB"
+      name: "[${bundle.environment}] FE Medium Metrics Pipeline - NB."
       target: "medium_post_report_${bundle.environment}"
       libraries:
         - file:
@@ -24,7 +24,7 @@ resources:
   jobs:
     # A two-task Databricks Workflow - dlt + notebook report
     fe_medium_metrics:
-      name: "[${bundle.environment}] Metrics for FE Medium Posts- NB"
+      name: "[${bundle.environment}] Metrics for FE Medium Posts- NB."
       tasks:
         - task_key: dlt_medium_pipeline
           pipeline_task:
