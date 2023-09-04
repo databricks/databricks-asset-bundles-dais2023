@@ -21,6 +21,7 @@ resources:
       clusters:
         - policy_id: "E060384AFC00043E"
           aws_attributes:
+              zone_id: auto
               instance_profile_arn: "arn:aws:iam::997819012307:instance-profile/shard-demo-s3-access"
 
       configuration:
