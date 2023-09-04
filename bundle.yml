@@ -49,7 +49,7 @@ environments:
         medium_metrics_pipeline:
           development: true
 
-  qa: # This environment is when deploying test runs from a pull request on GitHub.
+  qa: # This environment is when deploying test runs from a pull request on GitHub...
     workspace:
       host: https://e2-demo-west.cloud.databricks.com/
     resources:
