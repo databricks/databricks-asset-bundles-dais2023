@@ -36,7 +36,7 @@ resources:
             - task_key: dlt_medium_pipeline
           notebook_task:
             base_parameters:
-              dbname: "rodrigo_demo.dab_demos_dev.medium_post_report_${bundle.environment}"
+              dbname: "medium_post_report_${bundle.environment}"
             notebook_path: ./fe_medium_report.py
           new_cluster:
             spark_version: 13.1.x-scala2.12
@@ -76,4 +76,4 @@ environments:
           clusters:
             - autoscale:
                 min_workers: 2
-                max_workers: 4
+                max_workers: 2
