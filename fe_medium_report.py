@@ -110,3 +110,7 @@ displayHTML(fig.to_html(full_html=False))
 # COMMAND ----------
 
 display(enrichedDF)
+
+# COMMAND ----------
+
+print("Rodrigo")
