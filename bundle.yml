@@ -3,7 +3,7 @@ bundle:
   name: medium_post_report
 
 workspace:
-  host: https://e2-dogfood.staging.cloud.databricks.com/
+  host: https://adb-2765026106725720.0.azuredatabricks.net/
 
 resources:
 
@@ -12,6 +12,8 @@ resources:
     medium_metrics_pipeline:
       name: "[${bundle.environment}] FE Medium Metrics Pipeline"
       target: "medium_post_report_${bundle.environment}"
+      edition": "ADVANCED"
+      catalog": "rodrigo_demo"
       libraries:
         - file:
             path: ./ingest.py
@@ -34,12 +36,12 @@ resources:
             - task_key: dlt_medium_pipeline
           notebook_task:
             base_parameters:
-              dbname: "medium_post_report_${bundle.environment}"
+              dbname: "rodrigo_demo.dab_demos_dev.medium_post_report_${bundle.environment}"
             notebook_path: ./fe_medium_report.py
           new_cluster:
             spark_version: 13.1.x-scala2.12
             num_workers: 1
-            node_type_id: i3.xlarge            
+            node_type_id: Standard_DS3_v2      
 
 environments:
   development:
@@ -51,7 +53,7 @@ environments:
 
   qa: # This environment is when deploying test runs from a pull request on GitHub.
     workspace:
-      host: https://e2-demo-west.cloud.databricks.com/
+      host: https://adb-984752964297111.11.azuredatabricks.net/
     resources:
       pipelines:
         medium_metrics_pipeline:
@@ -62,7 +64,7 @@ environments:
 
   production:
     workspace:
-      host: https://e2-demo-west.cloud.databricks.com/
+      host: https://adb-984752964297111.11.azuredatabricks.net/
     resources:
       pipelines:
         medium_metrics_pipeline:
@@ -74,4 +76,4 @@ environments:
           clusters:
             - autoscale:
                 min_workers: 2
-                max_workers: 8
+                max_workers: 4

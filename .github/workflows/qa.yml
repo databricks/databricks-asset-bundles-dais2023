@@ -27,7 +27,7 @@ jobs:
 
       - run: databricks bundle deploy
         env:
-          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_QA_PROD_TOKEN }}
           DATABRICKS_BUNDLE_ENV: qa
 
   pipeline_update:
@@ -56,7 +56,7 @@ jobs:
           set -o pipefail
           databricks bundle run fe_medium_metrics --refresh-all 2>&1 | tee output.log
         env:
-          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_QA_PROD_TOKEN }}
           DATABRICKS_BUNDLE_ENV: qa
 
 #       - shell: bash
@@ -67,4 +67,4 @@ jobs:
 #           update_id=$(head -1 output.log | awk -F / '{print $8}')
 #           PYTHONPATH=$PWD:$PWD/.github/support python3 .github/support/emit_annotations.py $pipeline_id $update_id
 #         env:
-#           DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+#           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_QA_PROD_TOKEN }}

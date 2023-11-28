@@ -9,8 +9,6 @@
 
 from pyspark.sql.functions import desc
 
-dbutils.widgets.text("dbname", "")
-
 # COMMAND ----------
 
 # Read Medium metrics table

@@ -24,7 +24,7 @@ jobs:
 
       - run: databricks bundle deploy
         env:
-          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_QA_PROD_TOKEN }}
           DATABRICKS_BUNDLE_ENV: production
 
   pipeline_update:
@@ -41,5 +41,5 @@ jobs:
 
       - run: databricks bundle run fe_medium_metrics --refresh-all
         env:
-          DATABRICKS_TOKEN: ${{ secrets.E2_DEMO_WEST_TOKEN }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_QA_PROD_TOKEN }}
           DATABRICKS_BUNDLE_ENV: production
