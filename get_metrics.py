@@ -9,7 +9,7 @@ import requests
 def medium_metrics():
     df: DataFrame = dlt.read("medium_clean")
 
-    # change by Rodrigo
+    # change by Rodrigo 2
     metricsDF = df.groupby("link").applyInPandas(get_metrics, schema="link string, claps double, readingTime double")
 
     # Join on original data, sort by number of claps descending
